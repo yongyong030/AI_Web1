@@ -20,8 +20,6 @@ import datetime
 processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
 model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large")
 
-current_date = None
-image_index = 1
 def update_image_index(current_date, image_index):
     # 현재 날짜 가져오기
     today = datetime.date.today()
@@ -35,6 +33,8 @@ def update_image_index(current_date, image_index):
     else:
         return current_date, image_index
 
+current_date = None
+image_index = 1
 current_date, image_index = update_image_index(current_date, image_index)
 
 image_folder = os.path.join(BASE_DIR, 'imgquiz\\static\\val2017\\')

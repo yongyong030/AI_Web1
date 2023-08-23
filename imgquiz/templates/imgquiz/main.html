@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .hello-world-entry {
+        border: 1px solid #ccc;
+        width: 800px;
+        padding: 10px;
+        margin: 0 auto;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .hello-world-text {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .hello-world-score {
+        font-size: 14px;
+        color: #555;
+    }
+</style>
+
+    <div style="border-radius: 1rem; margin: 2rem; text-align: center">
+        <h1 style="font-family: 'Noto Sans KR'">
+            Today's Image
+        </h1>
+        <div style="border-radius: 1rem; margin: 2rem; text-align: center">
+
+        <div style="margin-bottom: 20px;">
+            <img src="{% static 'val2017/' %}{{ current_image }}" alt="Image">
+        </div>
+        <div>
+            <form action="{% url 'imgquiz:hello_world' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <input type="button" class="btn btn-dark" value="Show Answer" id="toggleButton"/>
+            </form>
+            <p id="caption" class="hello-world-text" style="display: none;">{{ caption }}</p>
+        </div>
+
+    </div>
+
+<div style="margin-bottom: 20px;">
+    <form action="{% url 'imgquiz:hello_world' %}" method="post">
+        {% csrf_token %}
+
+        <input id="hello-world-input" type="text" name="hello_world" size="80">
+        <input type="submit" class="btn btn-dark" value="Submit"/>
+    </form>
+</div>
+
+<div>
+    {% if hello_world_list %}
+        {% for hello_world in hello_world_list %}
+            <div class="hello-world-entry">
+                <div class="hello-world-text">
+                    {{ hello_world.text }}
+                </div>
+                <div class="hello-world-score">
+                    Score: {{ hello_world.score }}
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<script>
+    var toggleButton = document.getElementById("toggleButton");
+    var captionElement = document.getElementById("caption");
+
+    toggleButton.addEventListener("click", function() {
+        if (captionElement.style.display === "none") {
+            captionElement.style.display = "block";
+        } else {
+            captionElement.style.display = "none";
+        }
+    });
+</script>
+
+{% endblock %}
