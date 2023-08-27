@@ -35,12 +35,15 @@ current_date = None
 image_index = 1
 current_date, image_index = update_image_index(current_date, image_index)
 
-image_folder = os.path.join(BASE_DIR, 'imgquiz\\static\\val2017\\')
-image_files = [f for f in os.listdir(image_folder)]
-image_index = min(max(0, int(image_index)), len(image_files) - 1)
-current_image = image_files[image_index]
+# image_folder = os.path.join(BASE_DIR, 'imgquiz\\static\\val2017\\')
+# image_files = [f for f in os.listdir(image_folder)]
+# image_index = min(max(0, int(image_index)), len(image_files) - 1)
+# current_image = image_files[image_index]
+#
+# img_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/val2017/', current_image)
+# raw_image = Image.open(img_path).convert('RGB')
 
-img_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/val2017/', current_image)
+img_path = "https://picsum.photos/id/"+image_index+"/800"
 raw_image = Image.open(img_path).convert('RGB')
 
 # 사용자의 IP 주소를 가져오는 함수
@@ -73,15 +76,14 @@ def hello_world(request):
 
         return HttpResponseRedirect(reverse('imgquiz:hello_world'))
     else:
-        if not image_files:
+        if not img_path:
             return render(request, 'imgquiz/main.html', {'image_files': [], 'image_index': None})
 
         user_ip = get_client_ip(request)
         hello_world_list = list(reversed(HelloWorld.objects.filter(user_ip=user_ip)))
 
         context = {'image_index': image_index,
-                   'current_image': current_image,
-                   'image_files': image_files,
+                   'img_path': img_path,
                    'caption': caption,
                    'hello_world_list': hello_world_list,
                    }

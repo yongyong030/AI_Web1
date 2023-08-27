@@ -31,7 +31,8 @@
         <div style="border-radius: 1rem; margin: 2rem; text-align: center">
 
         <div style="margin-bottom: 20px;">
-            <img src="{% static 'val2017/' %}{{ current_image }}" alt="Image">
+<!--            <img src="{% static 'val2017/' %}{{ current_image }}" alt="Image">-->
+            <img src="{{ img_path }}" alt="Image">
         </div>
         <div>
             <form action="{% url 'imgquiz:hello_world' %}" method="post" style="display: inline;">
