@@ -43,7 +43,7 @@ current_date, image_index = update_image_index(current_date, image_index)
 # img_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/val2017/', current_image)
 # raw_image = Image.open(img_path).convert('RGB')
 
-img_path = "https://picsum.photos/id/"+image_index+"/800"
+img_path = "https://picsum.photos/id/"+image_index+"/300"
 raw_image = Image.open(img_path).convert('RGB')
 
 # 사용자의 IP 주소를 가져오는 함수
