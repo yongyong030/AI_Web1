@@ -9,16 +9,14 @@ from django.contrib.sessions.models import Session
 from web1.settings import BASE_DIR
 
 from PIL import Image
-from transformers import BlipProcessor, BlipForConditionalGeneration
 from django.db import transaction
-
-from sentence_transformers import SentenceTransformer
-from sentence_transformers.util import cos_sim
 
 import datetime
 
-processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
-model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large")
+from ai import caption, sentence_model
+from sentence_transformers.util import cos_sim
+
+
 
 def update_image_index(current_date, image_index):
     # 현재 날짜 가져오기
@@ -44,13 +42,6 @@ current_image = image_files[image_index]
 
 img_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/val2017/', current_image)
 raw_image = Image.open(img_path).convert('RGB')
-
-# unconditional image captioning
-inputs = processor(raw_image, return_tensors="pt")
-out = model.generate(**inputs)
-caption = processor.decode(out[0], skip_special_tokens=True)
-
-sentence_model = SentenceTransformer('thenlper/gte-large')
 
 # 사용자의 IP 주소를 가져오는 함수
 def get_client_ip(request):
@@ -97,40 +88,40 @@ def hello_world(request):
 
         return render(request, 'imgquiz/main.html', context)
 
-def show_images(request, image_index=0):
-    image_folder = os.path.join(BASE_DIR, 'imgquiz\\static\\val2017\\')
-    image_files = [f for f in os.listdir(image_folder)]
-
-    if not image_files:
-        return render(request, 'imgquiz/show.html', {'image_files': [], 'image_index': None})
-
-    image_index = min(max(0, int(image_index)), len(image_files) - 1)
-    current_image = image_files[image_index]
-
-    img_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/val2017/', current_image)
-    raw_image = Image.open(img_path).convert('RGB')
-
-    # unconditional image captioning
-    inputs = processor(raw_image, return_tensors="pt")
-
-    out = model.generate(**inputs)
-    caption = processor.decode(out[0], skip_special_tokens=True)
-
-    hello_world_list = HelloWorld.objects.all()
-
-    context = {'image_index': image_index,
-               'current_image': current_image,
-               'image_files': image_files,
-               'caption': caption,
-               'hello_world_list': hello_world_list}
-
-
-    return render(request, 'imgquiz/show.html',context)
-
-def next_image(request, image_index):
-    image_index = int(image_index) + 1
-    return show_images(request, image_index)
-
-def prev_image(request, image_index):
-    image_index = int(image_index) - 1
-    return show_images(request, image_index)
+# def show_images(request, image_index=0):
+#     image_folder = os.path.join(BASE_DIR, 'imgquiz\\static\\val2017\\')
+#     image_files = [f for f in os.listdir(image_folder)]
+#
+#     if not image_files:
+#         return render(request, 'imgquiz/show.html', {'image_files': [], 'image_index': None})
+#
+#     image_index = min(max(0, int(image_index)), len(image_files) - 1)
+#     current_image = image_files[image_index]
+#
+#     img_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/val2017/', current_image)
+#     raw_image = Image.open(img_path).convert('RGB')
+#
+#     # unconditional image captioning
+#     inputs = processor(raw_image, return_tensors="pt")
+#
+#     out = model.generate(**inputs)
+#     caption = processor.decode(out[0], skip_special_tokens=True)
+#
+#     hello_world_list = HelloWorld.objects.all()
+#
+#     context = {'image_index': image_index,
+#                'current_image': current_image,
+#                'image_files': image_files,
+#                'caption': caption,
+#                'hello_world_list': hello_world_list}
+#
+#
+#     return render(request, 'imgquiz/show.html',context)
+#
+# def next_image(request, image_index):
+#     image_index = int(image_index) + 1
+#     return show_images(request, image_index)
+#
+# def prev_image(request, image_index):
+#     image_index = int(image_index) - 1
+#     return show_images(request, image_index)
